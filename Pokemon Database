@@ -1,0 +1,42 @@
+#In this SQL code, I'm querying a database that's holding Pokemon data to answer questions about the data. 
+
+SELECT * FROM pokemon WHERE HP >200 ORDER BY HP;
+
+SELECT * FROM pokemon WHERE HP >95 AND Speed >100 ORDER BY HP;
+
+SELECT * FROM pokemon WHERE Type_1='Grass' AND Type_2='Poison';
+
+/* WHAT IS THE AVERAGE POKEMON SPEED?*/
+SELECT AVG(Speed) FROM pokemon; 
+
+/* WHAT IS THE MAX POKEMON SPEED?*/
+SELECT MAX(Speed) FROM pokemon;
+
+/* WHAT IS THE MIN POKEMON SPEED?*/
+SELECT MIN(Speed) FROM pokemon;
+
+/* WHO IS THE FASTEST?*/
+SELECT * FROM pokemon WHERE Speed= 180;
+
+/*WHO IS THE SLOWEST POKEMON?*/
+SELECT * FROM pokemon WHERE Speed= 5;
+
+/*HOW MANY LEGENDARIES ARE THERE?*/
+SELECT COUNT(*) FROM pokemon WHERE Legendary= "True";
+
+/*SPEED CATEGORIES*/
+SELECT COUNT(*), 
+    CASE
+    WHEN Speed= 180 THEN "FIRST"
+    WHEN Speed> 150 THEN "SECOND"
+    WHEN Speed> 100 THEN "THIRD"
+    WHEN Speed> 50  THEN "FOURTH"
+    WHEN Speed> 10  THEN "FIFTH"
+    WHEN Speed= 5   THEN "LAST"
+    END as Speed_Placement
+FROM pokemon GROUP BY Speed_Placement;
+
+/* MAX SPEED OF POKEMON IN GEN 1*/
+SELECT * FROM pokemon  WHERE Generation= 1 GROUP BY Number HAVING Speed< 50;
+
+SELECT * FROM pokemon WHERE Total> 650 OR Legendary= "True";
