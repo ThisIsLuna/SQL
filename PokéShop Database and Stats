@@ -1,0 +1,21 @@
+CREATE TABLE PokeShop (id INTEGER PRIMARY KEY, item TEXT, name TEXT, price INTEGER, badges_needed INTEGER, sales_profit INTEGER);
+
+INSERT INTO PokeShop VALUES (1, "Pokeball", "Pokeball", 200, 0, 180);
+INSERT INTO Pokeshop VALUES (2, "Pokeball", "Great Ball", 600, 1, 550);
+INSERT INTO PokeShop VALUES (3, "Healing", "Potion", 200, 0, 150);
+INSERT INTO PokeShop VALUES (4, "Medicine", "Antidote", 200, 0, 150);
+INSERT INTO PokeShop VALUES (5, "Medicine", "Paralyze Heal", 200, 0, 150);
+INSERT INTO PokeShop VALUES (6, "Pokeball", "Great Ball", 800, 5, 670);
+INSERT INTO PokeShop VALUES (7, "Medicine", "Burn Heal", 200, 0, 150);
+INSERT INTO PokeShop VALUES (8, "Medicine", "Ice Heal", 200, 0, 150);
+INSERT INTO PokeShop VALUES (9, "Mediine", "Full Heal", 400, 6, 340);
+INSERT INTO PokeShop VALUES (10, "Healing", "Super Posion", 700, 1, 730);
+INSERT INTO PokeShop VALUES (11, "Healing", "Hyper Potion", 1500, 4, 1300);
+INSERT INTO PokeShop VALUES (12, "Miscellaneous", "Repel", 400, 3, 375);
+INSERT INTO PokeShop VALUES (13, "Miscallaneous", "Super Repel", 700, 5, 650);
+INSERT INTO PokeShop VALUES (14, "Medicine", "Awakening", 200, 0, 150);
+INSERT INTO PokeShop VALUES (15, "Miscallaneous", "Poke Doll", 300, 3, 255);
+
+SELECT * FROM PokeShop ORDER BY price;
+SELECT item, name, price FROM PokeShop ORDER BY price;
+SELECT SUM(sales_profit) FROM PokeShop
