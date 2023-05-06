@@ -1,0 +1,214 @@
+  
+--- Show customers (Fullname, CustomerID, and Country) who are located in the US. ---
+
+SELECT FirstName, LastName, CustomerID, Country 
+FROM chinook.customers
+WHERE Country IS 'USA';
+
+--- Show customers (Fullname, CustomerID, and Country) who are located in the US. ---
+
+SELECT FirstName, LastName, CustomerID, Country 
+FROM chinook.customers
+WHERE Country <> 'USA'
+ORDER BY Country;
+
+--- Show the amount of customers  from each country ---
+
+SELECT Country, COUNT(Country) 
+FROM chinook.customers
+GROUP BY Country; 
+
+--- Show customers contact information (CustomerID, Fullname, Country, Phone, and Email) from those located in Canada. ---
+
+SELECT CustomerID, FirstName, LastName, Country, Phone, Email 
+FROM chinook.customers
+WHERE Country IS 'Canada'; 
+
+---Find the invoices from customers located in Canada. Results should show customer name, invoice ID, date, billing, and country.
+
+SELECT C.FirstName, C.LastName, I.InvoiceId, I.InvoiceDate, I.BillingCountry 
+FROM chinook.invoices AS I
+INNER JOIN chinook.customers AS C 
+ON I.CustomerID = C.CustomerID
+WHERE Country IS 'Canada';
+
+--- Show all employee data from those who work as sales agents. ---
+
+SELECT * FROM chinook.employees
+WHERE Title LIKE '%Sales%Agent%';
+
+--- Show employee contact information for who has worked for the company the longest and the shorest. ---
+
+SELECT EmployeeId, LastName, FirstName, Title, BirthDate, HireDate, Phone, Email 
+FROM chinook.employees
+WHERE HireDate IS (SELECT MAX(HireDate) FROM chinook.employees) 
+OR HireDate IS (SELECT MIN(HireDate) FROM chinook.employees);
+
+--- Show which emplyees worked with each customer. --- 
+
+SELECT E.LastName AS 'Employee (Last)', E.FirstName AS 'Employee (First)', C.LastName AS 'Customer (Last)', C.FirstName AS '(Customer (First)' 
+FROM chinook.employees AS E
+JOIN chinook.customers AS C
+ON E.EmployeeId = C.SupportRepId
+GROUP BY C.CustomerId
+ORDER BY EmployeeId;
+
+--- Show the invoiceIds associated with each employee--
+
+SELECT I.InvoiceId, E.LastName AS 'Employee' 
+FROM chinook.invoices AS I
+JOIN chinook.customers AS C
+ON I.CustomerId = C.CustomerId
+JOIN chinook.employees AS E
+ON C.SupportRepId = E.EmployeeId;
+
+--- Show the invoice total, customer name, country, and sale agent for all invoices. ---
+
+SELECT I.Total AS 'Invoice Total', C.LastName AS 'Customer', C.Country, E.LastName AS 'Employee'
+FROM chinook.invoices AS I
+JOIN chinook.customers AS C
+ON I.CustomerId = C.CustomerId
+JOIN chinook.employees AS E
+ON C.SupportRepId = E.EmployeeId;
+
+--- How many invoices were from 2009? ---
+
+SELECT COUNT(InvoiceId) AS 'Invoice Total: 2009'
+FROM chinook.invoices
+WHERE InvoiceDate LIKE '2009%';
+
+--- How many invoices were from 2010 through 2012? ---
+
+SELECT COUNT(InvoiceId) AS 'Invoice Total: 2010-2012'
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2010-01-01' AND '2012-01-01';
+
+---What were to total sales for 2009?---
+
+SELECT SUM(total) 
+FROM chinook.invoices
+WHERE InvoiceDate LIKE '2009%';
+
+--- What are the total sales for 2010-2012? ---
+
+SELECT SUM(total)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2010-01-01' AND '2012-01-01';
+
+--- How much revenue was earned each year? ---
+
+SELECT SUM(total) AS TotalRevenue,
+CASE
+    WHEN InvoiceDate LIKE '2009%' THEN '2009'
+    WHEN InvoiceDate LIKE '2010%' THEN '2010'
+    WHEN InvoiceDate LIKE '2011%' THEN '2011'
+    WHEN InvoiceDate LIKE '2012%' THEN '2012' 
+    WHEN InvoiceDate LIKE '2013%' THEN '2013'
+    END AS InvoiceYear
+FROM chinook.invoices 
+GROUP BY InvoiceYear;
+
+--- Write a query that includes the purchased track name and each invoiceId. ---
+
+SELECT I.InvoiceId, T.Name 
+FROM chinook.invoices AS I
+JOIN chinook.invoice_items AS II
+ON I.InvoiceId = II.InvoiceId
+JOIN chinook.tracks AS T
+ON II.TrackId = T.TrackId;
+
+--- Which album had the most sales? ---
+
+SELECT AL.Title, A.Name
+FROM chinook.albums AS AL
+JOIN chinook.artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN chinook.tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN chinook.invoice_items AS II
+ON T.TrackId = II.TrackId
+JOIN chinook.invoices AS I
+ON II.InvoiceId = I.InvoiceId
+GROUP BY AL.Title
+ORDER BY COUNT(I.InvoiceId) DESC
+LIMIT 1;
+
+--- Which artist had the most sales? ---
+
+SELECT A.Name, COUNT(I.InvoiceId) AS TracksSold 
+FROM chinook.albums AS AL
+JOIN chinook.artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN chinook.tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN chinook.invoice_items AS II
+ON T.TrackId = II.TrackId
+JOIN chinook.invoices AS I
+ON II.InvoiceId = I.InvoiceId
+GROUP BY A.Name
+ORDER BY COUNT(I.InvoiceId) DESC
+LIMIT 1;
+
+--- Write a query that includes the purchase track name, artist name, and album name with each invoice. ---
+
+SELECT I.InvoiceId, T.Name AS Track, A.Name AS Artist, AL.Title AS Album 
+FROM chinook.albums AS AL
+JOIN chinook.artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN chinook.tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN chinook.invoice_items AS II
+ON T.TrackId = II.TrackId
+JOIN chinook.invoices AS I
+ON II.InvoiceId = I.InvoiceId;
+
+--- Write a query with all tracks and their artist, album, media type, and genre. ---
+
+SELECT T.Name AS Track, A.Name AS Aritst, AL.Title AS Album, MT.Name AS Media, G.Name AS Genre
+FROM chinook.albums AS AL
+JOIN chinook.artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN chinook.tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN chinook.media_types AS MT
+ON T.MediaTypeId = MT.MediaTypeId
+JOIN chinook.genres AS G
+ON T.GenreId = G.GenreId;
+
+--- Show total sales made by each artist. ---
+
+WITH ArtistSales AS
+(SELECT A.Name AS Artist, T.Name AS Track, COUNT(I.InvoiceId) AS TracksSold, II.UnitPrice AS Price
+FROM albums AS AL
+JOIN artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN invoice_items AS II
+ON T.TrackId = II.TrackId
+JOIN invoices AS I
+ON II.InvoiceId = I.InvoiceId
+GROUP BY T.Name)
+SELECT Artist, SUM(TracksSold*Price) AS TotalSales
+FROM ArtistSales
+GROUP BY Artist
+ORDER BY TotalSales DESC;
+
+--- Show total sales by each album. ---
+
+WITH AlbumSales AS
+(SELECT AL.Title AS Album, T.Name AS Track, COUNT(I.InvoiceId) AS TracksSold, II.UnitPrice AS Price
+FROM albums AS AL
+JOIN artists AS A
+ON AL.ArtistId = A.ArtistId
+JOIN tracks AS T
+ON AL.AlbumId = T.AlbumId
+JOIN invoice_items AS II
+ON T.TrackId = II.TrackId
+JOIN invoices AS I
+ON II.InvoiceId = I.InvoiceId
+GROUP BY T.Name)
+SELECT Album, SUM(TracksSold*Price) AS TotalSales
+FROM AlbumSales
+GROUP BY Album
+ORDER BY TotalSales DESC;
